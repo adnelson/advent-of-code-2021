@@ -1,0 +1,13 @@
+{
+  "name": "day-1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bs-js-collections": "^1.8.0",
+    "bs-platform": "^9.0.2"
+  },
+  "devDependencies": {
+    "onchange": "^7.1.0"
+  }
+}
