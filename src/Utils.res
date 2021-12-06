@@ -3,6 +3,12 @@ let tapLog = (value, description) => {
   value
 }
 
+let tapLogIf = (pred, value, description) => {
+  if (pred) {
+  Js.log2(description, value) }
+  value
+}
+
 let readInput = n => Node.Fs.readFileSync(`./input${n->Js.Int.toString}.txt`, #utf8)
 
 let processInput = input =>
@@ -20,6 +26,17 @@ let transpose: 'a. array<array<'a>> => array<array<'a>> = matrix => {
 }
 
 let sumArray: array<int> => int = arr => arr->Belt.Array.reduce(0, (a, b) => a + b)
+
+@val @variadic external max: array<int> => int = "Math.max";
+@val @variadic external min: array<int> => int = "Math.min";
+@send external flatMap: array<'a> => ('a => array<'b>) => array<'b> = "flatMap"
+@send @variadic external pushMany: array<'a> => array<'a> => int = "push"
+
+let flatten: array<array<'a>> => array<'a> = (arr) => {
+  let res = []
+  arr->Js.Array2.forEach(row => res->pushMany(row)->ignore)
+  res;
+}
 
 let minBy: 'a. (array<'a>, 'a => int) => option<'a> = (arr, toScore) => {
   let min = ref(None)

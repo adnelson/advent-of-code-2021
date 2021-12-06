@@ -86,14 +86,12 @@ let getBingoScore: (array<int>, board) => option<{"score": int, "index": int}> =
 }
 
 let getFirstBingoScore: (array<int>, array<board>) => option<int> = (numbers, boards) => {
-  let scoringBoards =
-    boards->Belt.Array.keepMap(board => getBingoScore(numbers, board));
+  let scoringBoards = boards->Belt.Array.keepMap(board => getBingoScore(numbers, board))
   scoringBoards->Utils.minBy(board => board["index"])->Belt.Option.map(board => board["score"])
 }
 
 let getLastBingoScore: (array<int>, array<board>) => option<int> = (numbers, boards) => {
-  let scoringBoards =
-    boards->Belt.Array.keepMap(board => getBingoScore(numbers, board));
+  let scoringBoards = boards->Belt.Array.keepMap(board => getBingoScore(numbers, board))
   scoringBoards->Utils.maxBy(board => board["index"])->Belt.Option.map(board => board["score"])
 }
 
