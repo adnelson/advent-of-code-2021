@@ -69,3 +69,5 @@ let maxBy: 'a. (array<'a>, 'a => int) => option<'a> = (arr, toScore) => {
   })
   max.contents->Belt.Option.map(fst)
 }
+
+let splitNums = s => s->Js.String2.split(",")->Js.Array2.map(int_of_string)

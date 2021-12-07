@@ -5,7 +5,7 @@ let testInput = `
 type bigint
 
 @val external bigintFromInt: int => bigint = "BigInt"
-let plusBI: (bigint, bigint) => bigint = (a, b) => %raw(`a + b`)
+let plusBI: (bigint, bigint) => bigint = (a, b) => {let _ = (a, b); %raw(`a + b`)}
 let incBigInt: bigint => bigint = bi => plusBI(bi, bigintFromInt(1))
 
 type counts = {
@@ -66,7 +66,7 @@ let countsFromArray: array<int> => counts = nums =>
       | 5 => {...counts, five: counts.five->incBigInt}
       | 6 => {...counts, six: counts.six->incBigInt}
       | 7 => {...counts, seven: counts.seven->incBigInt}
-      | 8 => {...counts, eight: counts.eight->incBigInt}
+      | _ => {...counts, eight: counts.eight->incBigInt}
       },
   )
 
@@ -81,6 +81,6 @@ let tickAll: (counts, int) => counts = (initialCounts, days) => {
   counts.contents
 }
 
-let _ = Js.log(Utils.readInput(6)->parseInput->Utils.tapLog("x")->tickAll(256)->total)
+let _ = Js.log(Utils.readInput(6)->parseInput->tickAll(256)->total)
 
 //Js.log(testInput->parseInput->tick->tick->tick);

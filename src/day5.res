@@ -87,27 +87,6 @@ let numRows: array<segment> => int = segments =>
 let numColumns: array<segment> => int = segments =>
   segments->Utils.flatMap(seg => [seg.start.x, seg.end_.x])->Utils.max
 
-let getGrid: array<segment> => array<array<int>> = segments => {
-  let (nRows, nColumns) = (segments->numRows + 1, segments->numColumns + 1)
-  nRows->Belt.Array.makeBy(y =>
-    nColumns->Belt.Array.makeBy(x => {
-      let point = {x: x, y: y}
-      segments->Js.Array2.filter(isPointInSegment(point))->Js.Array2.length
-    })
-  )
-}
-
-let seg1 = {
-  start: {
-    x: 10,
-    y: 10,
-  },
-  end_: {
-    x: 5,
-    y: 15,
-  },
-}
-
 let printGrid = grid => {
   grid
   ->Js.Array2.map(row =>
