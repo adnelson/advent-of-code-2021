@@ -11,89 +11,74 @@ egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg |gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc |fgae cfgab fg bagce
 `
 
-let testInput2 = `
-acbd bagfec bedcf efbca dbfecag gadcfe dc dbcaef cde fbegd | deacfg bfagcde bgedf cde
-`
-
-type mapping = {
-  top: string,
-  topleft: string,
-  topright: string,
-  middle: string,
-  botleft: string,
-  botright: string,
-  bot: string,
-}
-
-let emptyMapping = {
-  top: "",
-  topleft: "",
-  topright: "",
-  middle: "",
-  botleft: "",
-  botright: "",
-  bot: "",
-}
-
 @new external charSet: string => JsSet.t<string> = "Set"
 let charsInCommon = (s1, s2) => charSet(s1)->JsSet.intersection(charSet(s2))
 let numCharsInCommon = (s1, s2) => charsInCommon(s1, s2)->JsSet.size
 
 let parseSigPatterns = sigPatterns => {
   let patterns = sigPatterns->Js.String2.split(" ")
-  let onePattern = patterns->Js.Array2.find(s => s->Js.String.length == 2)
-  let fourPattern = patterns->Js.Array2.find(s => s->Js.String.length == 4)
-  let sevenPattern = patterns->Js.Array2.find(s => s->Js.String.length == 3)
-  switch (onePattern, fourPattern, sevenPattern) {
-  | (Some(one), Some(four), Some(seven)) => {
-      // Find six, it is a pattern with length 6 and it has only one in common with 1
-      let six =
-        patterns
-        ->Js.Array2.find(s => s->Js.String.length == 6 && numCharsInCommon(s, one) == 1)
-        ->Belt.Option.getExn
-      // Zero has six letters, two in common with 1, and 3 in common with 4
-      let zero =
-        patterns
-        ->Js.Array2.find(s => s->Js.String.length == 6 && numCharsInCommon(s, one) == 2
- && numCharsInCommon(s, four) == 3)
-        ->Belt.Option.getExn
+  // Start with three patterns we can find by length alone
+  let one = patterns->Js.Array2.find(s => s->Js.String.length == 2)->Belt.Option.getExn
+  let four = patterns->Js.Array2.find(s => s->Js.String.length == 4)->Belt.Option.getExn
+  let seven = patterns->Js.Array2.find(s => s->Js.String.length == 3)->Belt.Option.getExn
 
-      // Nine has 6 letters and contains 4
-      let nine =
-        patterns
-        ->Js.Array2.find(s => s->Js.String.length == 6 && numCharsInCommon(s, four) == 4)
-        ->Belt.Option.getExn
+  // Find six, it is a pattern with length 6 and it has only one in common with 1
+  let six =
+    patterns
+    ->Js.Array2.find(s => s->Js.String.length == 6 && numCharsInCommon(s, one) == 1)
+    ->Belt.Option.getExn
 
-      // Three has length 5 and two in common with 1
-      let three =
-        patterns
-        ->Js.Array2.find(s => s->Js.String.length == 5 && numCharsInCommon(s, one) == 2)
-        ->Belt.Option.getExn
-      // Five has 5 letters and all are contained in 6
-      let five =
-        patterns
-        ->Js.Array2.find(s => s->Js.String.length == 5 && numCharsInCommon(s, six) == 5)
-        ->Belt.Option.getExn
-      // Two has 5 letters, one in common with 1 and is not five :|
-      let two =
-        patterns->Js.Array2.find(s => s->Js.String.length == 5 && numCharsInCommon(s, one) == 1 && s->Utils.sortString != five->Utils.sortString)->Belt.Option.getExn
-      // Eight has 7 letters
-      let eight = patterns->Js.Array2.find(s => s->Js.String.length == 7)->Belt.Option.getExn
-      Js.Dict.fromArray([
-        (zero->Utils.sortString, "0"),
-        (one->Utils.sortString, "1"),
-        (two->Utils.sortString, "2"),
-        (three->Utils.sortString, "3"),
-        (four->Utils.sortString, "4"),
-        (five->Utils.sortString, "5"),
-        (six->Utils.sortString, "6"),
-        (seven->Utils.sortString, "7"),
-        (eight->Utils.sortString, "8"),
-        (nine->Utils.sortString, "9"),
-      ])
-    }
-  | _ => failwith(`couldn't find one of the three canonical numbers in ${sigPatterns}`)
-  }
+  // Zero has six letters, two in common with 1, and 3 in common with 4
+  let zero =
+    patterns
+    ->Js.Array2.find(s =>
+      s->Js.String.length == 6 && numCharsInCommon(s, one) == 2 && numCharsInCommon(s, four) == 3
+    )
+    ->Belt.Option.getExn
+
+  // Nine has 6 letters and contains 4
+  let nine =
+    patterns
+    ->Js.Array2.find(s => s->Js.String.length == 6 && numCharsInCommon(s, four) == 4)
+    ->Belt.Option.getExn
+
+  // Three has length 5 and two in common with 1
+  let three =
+    patterns
+    ->Js.Array2.find(s => s->Js.String.length == 5 && numCharsInCommon(s, one) == 2)
+    ->Belt.Option.getExn
+
+  // Five has 5 letters and all are contained in 6
+  let five =
+    patterns
+    ->Js.Array2.find(s => s->Js.String.length == 5 && numCharsInCommon(s, six) == 5)
+    ->Belt.Option.getExn
+
+  // Two has 5 letters, one in common with 1 and is not five :|
+  let two =
+    patterns
+    ->Js.Array2.find(s =>
+      s->Js.String.length == 5 &&
+      numCharsInCommon(s, one) == 1 &&
+      s->Utils.sortString != five->Utils.sortString
+    )
+    ->Belt.Option.getExn
+  // Eight has 7 letters
+  let eight = patterns->Js.Array2.find(s => s->Js.String.length == 7)->Belt.Option.getExn
+
+  // Return a dictionary with each pattern sorted as a key, mapping to the digit
+  Js.Dict.fromArray([
+    (zero->Utils.sortString, "0"),
+    (one->Utils.sortString, "1"),
+    (two->Utils.sortString, "2"),
+    (three->Utils.sortString, "3"),
+    (four->Utils.sortString, "4"),
+    (five->Utils.sortString, "5"),
+    (six->Utils.sortString, "6"),
+    (seven->Utils.sortString, "7"),
+    (eight->Utils.sortString, "8"),
+    (nine->Utils.sortString, "9"),
+  ])
 }
 
 let decodeOutputValue = (patterns, output) =>
