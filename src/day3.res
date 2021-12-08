@@ -46,9 +46,7 @@ let leastCommonDigit: array<int> => int = digits =>
   | _ => 1
   }
 
-@val external parseInt: (string, int) => int = "parseInt"
-
-let binaryToInt: array<int> => int = digits => digits->Js.Array2.joinWith("")->parseInt(2)
+let binaryToInt: array<int> => int = digits => digits->Js.Array2.joinWith("")->Utils.parseInt(2)
 
 let gammaDigits: array<array<int>> => array<int> = matrix => {
   let len = matrix[0]->Js.Array2.length

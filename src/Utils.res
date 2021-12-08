@@ -15,7 +15,13 @@ let tapLogIf = (pred, value, description) => {
   value
 }
 
+let optOr = opt1 => opt2 => switch opt1 { | None => opt2 | _ => opt1 }
+
 let readInput = n => Node.Fs.readFileSync(`./input${n->Js.Int.toString}.txt`, #utf8)
+
+@send external sortArray: array<'a> => array<'a> = "sort";
+
+let sortString = s => s->Js.String2.split("")->sortArray->Js.Array2.joinWith("")
 
 let processInput = input =>
   input->Js.String.trim->Js.String2.split("\n")->Js.Array2.filter(s => s != "")
@@ -37,6 +43,8 @@ let sumArray: array<int> => int = arr => arr->Belt.Array.reduce(0, (a, b) => a +
 @val @variadic external min: array<int> => int = "Math.min"
 @send external flatMap: (array<'a>, 'a => array<'b>) => array<'b> = "flatMap"
 @send @variadic external pushMany: (array<'a>, array<'a>) => int = "push"
+
+
 
 let flatten: array<array<'a>> => array<'a> = arr => {
   let res = []
@@ -71,3 +79,5 @@ let maxBy: 'a. (array<'a>, 'a => int) => option<'a> = (arr, toScore) => {
 }
 
 let splitNums = s => s->Js.String2.split(",")->Js.Array2.map(int_of_string)
+
+@val external parseInt: (string, int) => int = "parseInt"

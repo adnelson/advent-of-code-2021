@@ -5,7 +5,10 @@ let testInput = `
 type bigint
 
 @val external bigintFromInt: int => bigint = "BigInt"
-let plusBI: (bigint, bigint) => bigint = (a, b) => {let _ = (a, b); %raw(`a + b`)}
+let plusBI: (bigint, bigint) => bigint = (a, b) => {
+  let _ = (a, b)
+  %raw(`a + b`)
+}
 let incBigInt: bigint => bigint = bi => plusBI(bi, bigintFromInt(1))
 
 type counts = {
