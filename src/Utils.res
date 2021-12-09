@@ -38,6 +38,7 @@ let transpose: 'a. array<array<'a>> => array<array<'a>> = matrix => {
 }
 
 let sumArray: array<int> => int = arr => arr->Belt.Array.reduce(0, (a, b) => a + b)
+let multArray: array<int> => int = arr => arr->Belt.Array.reduce(1, (a, b) => a * b)
 
 @val @variadic external max: array<int> => int = "Math.max"
 @val @variadic external min: array<int> => int = "Math.min"
@@ -81,3 +82,10 @@ let maxBy: 'a. (array<'a>, 'a => int) => option<'a> = (arr, toScore) => {
 let splitNums = s => s->Js.String2.split(",")->Js.Array2.map(int_of_string)
 
 @val external parseInt: (string, int) => int = "parseInt"
+
+let keepSome: array<option<'a>> => array<'a> = arr => arr->Belt.Array.keepMap(x => x);
+
+// Sort an array using the builtin compare function, after applying a function to the element.
+let sortByCompareOn: 'a. (array<'a>, 'a => 'b) => array<'a> =
+  (arr, f) =>
+    arr->Belt.SortArray.stableSortBy((a, b) => compare(f(a), f(b)));

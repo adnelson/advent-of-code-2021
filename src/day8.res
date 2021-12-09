@@ -124,5 +124,5 @@ let part1 = () =>
 
 let part2 = () => Utils.readInput(8)->decodeInput2->Utils.sumArray
 
-let _ = part1()->Utils.tapLog("part1")
+//let _ = part1()->Utils.tapLog("part1")
 let _ = part2()->Utils.tapLog("part2")
