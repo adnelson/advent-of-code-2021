@@ -89,3 +89,24 @@ let keepSome: array<option<'a>> => array<'a> = arr => arr->Belt.Array.keepMap(x 
 let sortByCompareOn: 'a. (array<'a>, 'a => 'b) => array<'a> =
   (arr, f) =>
     arr->Belt.SortArray.stableSortBy((a, b) => compare(f(a), f(b)));
+
+
+type bigint
+
+@val external bigintFromInt: int => bigint = "BigInt"
+let plusBI: (bigint, bigint) => bigint = (a, b) => {
+  let _ = (a, b)
+  %raw(`a + b`)
+}
+let multBI: (bigint, bigint) => bigint = (a, b) => {
+  let _ = (a, b)
+  %raw(`a * b`)
+}
+
+@send
+external sortArray: array<'a> => array<'a> = "sort";
+
+let sortBigInts = (bigints: array<bigint>) => {
+  let _ = bigints;
+  %raw(`bigints.sort((a,b)=>a<b?-1:(a>b?1:0))`);
+}
